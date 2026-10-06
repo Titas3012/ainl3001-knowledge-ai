@@ -183,10 +183,22 @@ def simulated_annealing(problem, start_board):
     temperature = 10.0
     cooling_rate = 0.95
 
-    # TODO
 
-    pass
+    min_temperature = 0.01
+    current_cost = count_conflicts(current)
 
+    while temperature > min_temperature and current_cost > 0:
+        neighbour = random.choice(generate_neighbours(problem, current))
+        neighbour_cost = count_conflicts(neighbour)
+        delta = neighbour_cost - current_cost
+
+        if delta < 0 or random.random() < math.exp(-delta / temperature):
+            current = neighbour
+            current_cost = neighbour_cost
+
+        temperature *= cooling_rate
+
+    return current
 
 # --------------------------------------------------
 # TESTING AREA
@@ -233,3 +245,15 @@ if __name__ == "__main__":
         start = [random.randint(0, N - 1) for _ in range(N)]
         result = hill_climbing(QueensProblem(start), start)
         print(f"Attempt {attempt}: start cost = {count_conflicts(start)}, final cost = {count_conflicts(result)}, board = {result}")
+        
+        
+        
+    print("\n--- Comparison (10 runs each) ---")
+    for name, algorithm in [("Hill Climbing", hill_climbing),
+                            ("Simulated Annealing", simulated_annealing)]:
+        costs = []
+        for _ in range(10):
+            start = [random.randint(0, N - 1) for _ in range(N)]
+            result = algorithm(QueensProblem(start), start)
+            costs.append(count_conflicts(result))
+        print(f"{name}: best = {min(costs)}, all = {costs}")
