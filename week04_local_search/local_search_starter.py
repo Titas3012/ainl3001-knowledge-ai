@@ -149,9 +149,18 @@ def hill_climbing(problem, start_board):
 
     current = start_board
 
-    # TODO
+    current_cost = count_conflicts(current)
 
-    pass
+    while True:
+        neighbours = generate_neighbours(problem, current)
+        best = min(neighbours, key=count_conflicts)
+        best_cost = count_conflicts(best)
+
+        if best_cost >= current_cost:
+            return current
+
+        current = best
+        current_cost = best_cost
 
 
 # --------------------------------------------------
@@ -189,7 +198,7 @@ if __name__ == "__main__":
         random.randint(0, N - 1)
         for _ in range(N)
     ]
-
+    
     problem = QueensProblem(board)
 
     print("\nRandom Board")
