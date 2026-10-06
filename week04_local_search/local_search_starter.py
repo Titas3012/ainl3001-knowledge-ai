@@ -227,3 +227,9 @@ if __name__ == "__main__":
     print(
         f"{len(neighbours)} neighbours generated"
     )
+    
+    print("\n--- Hill Climbing experiments ---")
+    for attempt in range(1, 6):
+        start = [random.randint(0, N - 1) for _ in range(N)]
+        result = hill_climbing(QueensProblem(start), start)
+        print(f"Attempt {attempt}: start cost = {count_conflicts(start)}, final cost = {count_conflicts(result)}, board = {result}")
