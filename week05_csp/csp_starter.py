@@ -72,13 +72,14 @@ constraints = [
     # 2. If BOTH regions have been assigned, compare their colours.
     # 3. Return False if neighbouring regions have the same colour.
     # 4. Otherwise return True.
+    
 def is_valid_assignment(assignment):
     """Return True if a complete OR partial assignment is valid."""
     for region1, region2 in constraints:
         # Only check the pair if BOTH regions have a colour
         if region1 in assignment and region2 in assignment:
             if assignment[region1] == assignment[region2]:
-                return False   # neighbours share a colour -> invalid
+                return False   # neighbours share a colour
     return True                # no clashes found
 
 
@@ -103,7 +104,11 @@ def select_unassigned_variable(assignment):
     # For each unassigned variable, temporarily try each colour,
     # check is_valid_assignment(), and undo the temporary assignment.
     # Count legal colours and choose the variable with the fewest.
-    pass
+    
+    for variable in variables:
+        if variable not in assignment:
+            return variable
+    return None
 
 
 # --------------------------------------------------
