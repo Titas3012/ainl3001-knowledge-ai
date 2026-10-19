@@ -88,14 +88,30 @@ def is_valid_assignment(assignment):
 # --------------------------------------------------
 
 def select_unassigned_variable(assignment):
-    """Choose the next unassigned region.
+    """Choose the unassigned region with the FEWEST legal colours (MRV)."""
+    best_variable = None
+    fewest_legal = None
 
-    Task 3: First return the FIRST unassigned region.
+    for variable in variables:
+        if variable in assignment:
+            continue                      # already coloured, skip it
 
-    Task 5: Replace that approach with MRV (Minimum Remaining Values):
-    choose the unassigned region with the FEWEST currently legal
-    colours. Break ties by keeping the first region in variables.
-    """
+        # Count how many colours are currently legal for this region
+        legal_count = 0
+        for value in domains[variable]:
+            assignment[variable] = value          # try it temporarily
+            if is_valid_assignment(assignment):
+                legal_count += 1
+            del assignment[variable]              # undo the temporary try
+
+        # Keep the region with the smallest count
+        # (strict < means ties keep the earlier region in the list)
+        if fewest_legal is None or legal_count < fewest_legal:
+            best_variable = variable
+            fewest_legal = legal_count
+
+    return best_variable
+
     # TASK 3 TODO:
     # Return the first variable not in assignment, or None if all
     # variables have been assigned.
@@ -105,18 +121,14 @@ def select_unassigned_variable(assignment):
     # check is_valid_assignment(), and undo the temporary assignment.
     # Count legal colours and choose the variable with the fewest.
     
-    for variable in variables:
-        if variable not in assignment:
-            return variable
-    return None
+
 
 
 # --------------------------------------------------
 # TASK 3 — BACKTRACKING SEARCH
 # --------------------------------------------------
 
-def backtracking_search(assignment):
-    """Return a complete valid assignment, or None if none exists."""
+
     # TODO:
     # 1. If every variable has been assigned, return a COPY.
     # 2. Choose a variable with select_unassigned_variable().
@@ -125,7 +137,32 @@ def backtracking_search(assignment):
     # 5. Return the recursive result if a solution was found.
     # 6. Otherwise remove the temporary assignment (backtrack).
     # 7. Return None if every colour fails.
-    pass
+    
+def backtracking_search(assignment):
+    """Return a complete valid assignment, or None if none exists."""
+    # 1. Every region coloured 
+    if len(assignment) == len(variables):
+        return assignment.copy()
+
+    # 2. Pick the next region to colour
+    variable = select_unassigned_variable(assignment)
+
+    # 3. Try each colour for it
+    for value in domains[variable]:
+        assignment[variable] = value              
+
+        # 4. Only go deeper if nothing is broken so far
+        if is_valid_assignment(assignment):
+            result = backtracking_search(assignment)
+            # 5. A solution came back, pass it up
+            if result is not None:
+                return result
+
+        # 6. That colour failed, undo it
+        del assignment[variable]
+
+    # 7. No colour worked for this region
+    return None
 
 
 # --------------------------------------------------
