@@ -68,14 +68,18 @@ constraints = [
 # TASK 2 — CONSTRAINT CHECKING
 # --------------------------------------------------
 
-def is_valid_assignment(assignment):
-    """Return True if a complete OR partial assignment is valid."""
-    # TODO:
     # 1. Loop over neighbouring pairs in constraints.
     # 2. If BOTH regions have been assigned, compare their colours.
     # 3. Return False if neighbouring regions have the same colour.
     # 4. Otherwise return True.
-    pass
+def is_valid_assignment(assignment):
+    """Return True if a complete OR partial assignment is valid."""
+    for region1, region2 in constraints:
+        # Only check the pair if BOTH regions have a colour
+        if region1 in assignment and region2 in assignment:
+            if assignment[region1] == assignment[region2]:
+                return False   # neighbours share a colour -> invalid
+    return True                # no clashes found
 
 
 # --------------------------------------------------
