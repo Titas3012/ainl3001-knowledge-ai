@@ -176,7 +176,18 @@ def best_move(state, counter):
     # TODO: Try each legal X move, call minimax() for O's turn,
     # and return the move with the highest score.
     # If the board is terminal, return None.
-    pass
+    if is_terminal(state):
+        return None
+
+    best_score = -math.inf
+    chosen = None
+    for move in available_moves(state):
+        child = make_move(state, move, "X")
+        score = minimax(child, False, counter)
+        if score > best_score:
+            best_score = score
+            chosen = move
+    return chosen
 
 
 # --------------------------------------------------
@@ -193,7 +204,29 @@ def alpha_beta(state, maximizing, alpha, beta, counter):
     # - MAX updates alpha; MIN updates beta.
     # - Stop exploring remaining moves if alpha >= beta.
     # - Count visited nodes exactly as in minimax().
-    pass
+    counter["nodes"] += 1
+
+    if is_terminal(state):
+        return utility(state)
+
+    if maximizing:
+        best = -math.inf
+        for move in available_moves(state):
+            child = make_move(state, move, "X")
+            best = max(best, alpha_beta(child, False, alpha, beta, counter))
+            alpha = max(alpha, best)      
+            if alpha >= beta:            
+                break                     
+        return best
+    else:
+        best = math.inf
+        for move in available_moves(state):
+            child = make_move(state, move, "O")
+            best = min(best, alpha_beta(child, True, alpha, beta, counter))
+            beta = min(beta, best)        
+            if alpha >= beta:             
+                break                     
+        return best
 
 
 # --------------------------------------------------
@@ -205,7 +238,20 @@ def best_move_alpha_beta(state, counter):
     # TODO: Like best_move(), but call alpha_beta().
     # Start alpha at -infinity and beta at +infinity.
     # Update alpha after each candidate X move.
-    pass
+    if is_terminal(state):
+        return None
+
+    alpha, beta = -math.inf, math.inf
+    best_score = -math.inf
+    chosen = None
+    for move in available_moves(state):
+        child = make_move(state, move, "X")
+        score = alpha_beta(child, False, alpha, beta, counter)
+        if score > best_score:
+            best_score = score
+            chosen = move
+        alpha = max(alpha, best_score)
+    return chosen
 
 
 # --------------------------------------------------
