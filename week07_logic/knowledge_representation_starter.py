@@ -8,7 +8,7 @@ BSP
 """
 
 # TASK 1 — Represent facts (provided; inspect and experiment).
-facts = {"rainy", "weekday", "cold"}
+facts = {"rainy", "weekday"}
 
 # TASK 2 — Represent rules (provided; inspect and experiment).
 # Each rule is (list_of_required_facts, conclusion).
